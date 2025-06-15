@@ -3359,7 +3359,7 @@
     "/workflow": {
       "get": {
         "operationId": "WorkflowController_findAll",
-        "summary": "[BETA] Get Workflows",
+        "summary": "Get Workflows",
         "parameters": [],
         "responses": {
           "200": {
@@ -3387,7 +3387,7 @@
       },
       "post": {
         "operationId": "WorkflowController_create",
-        "summary": "[BETA] Create Workflow",
+        "summary": "Create Workflow",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -3424,7 +3424,7 @@
     "/workflow/{id}": {
       "get": {
         "operationId": "WorkflowController_findOne",
-        "summary": "[BETA] Get Workflow",
+        "summary": "Get Workflow",
         "parameters": [
           {
             "name": "id",
@@ -3458,7 +3458,7 @@
       },
       "delete": {
         "operationId": "WorkflowController_delete",
-        "summary": "[BETA] Delete Workflow",
+        "summary": "Delete Workflow",
         "parameters": [
           {
             "name": "id",
@@ -3492,7 +3492,7 @@
       },
       "patch": {
         "operationId": "WorkflowController_update",
-        "summary": "[BETA] Update Workflow",
+        "summary": "Update Workflow",
         "parameters": [
           {
             "name": "id",
@@ -5278,6 +5278,10 @@
             "type": "number",
             "description": "This is the cost of Vapi."
           },
+          "chat": {
+            "type": "number",
+            "description": "This is the cost of chat interactions."
+          },
           "total": {
             "type": "number",
             "description": "This is the total cost of the call."
@@ -5623,6 +5627,10 @@
                 {
                   "$ref": "#/components/schemas/FallbackOpenAITranscriber",
                   "title": "OpenAI"
+                },
+                {
+                  "$ref": "#/components/schemas/FallbackCartesiaTranscriber",
+                  "title": "Cartesia"
                 }
               ]
             }
@@ -5655,6 +5663,35 @@
             "minimum": 0,
             "maximum": 1,
             "example": 0.4
+          },
+          "enableUniversalStreamingApi": {
+            "type": "boolean",
+            "description": "Uses Assembly AI's new Universal Streaming API. See: https://www.assemblyai.com/docs/speech-to-text/universal-streaming\n\n@default false",
+            "example": false
+          },
+          "endOfTurnConfidenceThreshold": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "example": 0.7
+          },
+          "minEndOfTurnSilenceWhenConfident": {
+            "type": "number",
+            "description": "The minimum amount of silence in milliseconds required to detect end of turn when confident. Only used when `enableUniversalStreamingApi` is true.\n\n@default 160",
+            "minimum": 0,
+            "example": 160
+          },
+          "wordFinalizationMaxWaitTime": {
+            "type": "number",
+            "description": "The maximum wait time for word finalization. Only used when `enableUniversalStreamingApi` is true.\n\n@default 160",
+            "minimum": 0,
+            "example": 160
+          },
+          "maxTurnSilence": {
+            "type": "number",
+            "description": "The maximum amount of silence in milliseconds allowed in a turn before end of turn is triggered. Only used when `enableUniversalStreamingApi` is true.\n\n@default 400",
+            "minimum": 0,
+            "example": 400
           },
           "realtimeUrl": {
             "type": "string",
@@ -5846,6 +5883,224 @@
               "zh-HK",
               "zh-TW",
               "zu-ZA"
+            ]
+          },
+          "fallbackPlan": {
+            "description": "This is the plan for voice provider fallbacks in the event that the primary voice provider fails.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FallbackTranscriberPlan"
+              }
+            ]
+          }
+        },
+        "required": [
+          "provider"
+        ]
+      },
+      "CartesiaTranscriber": {
+        "type": "object",
+        "properties": {
+          "provider": {
+            "type": "string",
+            "enum": [
+              "cartesia"
+            ]
+          },
+          "model": {
+            "type": "string",
+            "enum": [
+              "ink-whisper"
+            ]
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "aa",
+              "ab",
+              "ae",
+              "af",
+              "ak",
+              "am",
+              "an",
+              "ar",
+              "as",
+              "av",
+              "ay",
+              "az",
+              "ba",
+              "be",
+              "bg",
+              "bh",
+              "bi",
+              "bm",
+              "bn",
+              "bo",
+              "br",
+              "bs",
+              "ca",
+              "ce",
+              "ch",
+              "co",
+              "cr",
+              "cs",
+              "cu",
+              "cv",
+              "cy",
+              "da",
+              "de",
+              "dv",
+              "dz",
+              "ee",
+              "el",
+              "en",
+              "eo",
+              "es",
+              "et",
+              "eu",
+              "fa",
+              "ff",
+              "fi",
+              "fj",
+              "fo",
+              "fr",
+              "fy",
+              "ga",
+              "gd",
+              "gl",
+              "gn",
+              "gu",
+              "gv",
+              "ha",
+              "he",
+              "hi",
+              "ho",
+              "hr",
+              "ht",
+              "hu",
+              "hy",
+              "hz",
+              "ia",
+              "id",
+              "ie",
+              "ig",
+              "ii",
+              "ik",
+              "io",
+              "is",
+              "it",
+              "iu",
+              "ja",
+              "jv",
+              "ka",
+              "kg",
+              "ki",
+              "kj",
+              "kk",
+              "kl",
+              "km",
+              "kn",
+              "ko",
+              "kr",
+              "ks",
+              "ku",
+              "kv",
+              "kw",
+              "ky",
+              "la",
+              "lb",
+              "lg",
+              "li",
+              "ln",
+              "lo",
+              "lt",
+              "lu",
+              "lv",
+              "mg",
+              "mh",
+              "mi",
+              "mk",
+              "ml",
+              "mn",
+              "mr",
+              "ms",
+              "mt",
+              "my",
+              "na",
+              "nb",
+              "nd",
+              "ne",
+              "ng",
+              "nl",
+              "nn",
+              "no",
+              "nr",
+              "nv",
+              "ny",
+              "oc",
+              "oj",
+              "om",
+              "or",
+              "os",
+              "pa",
+              "pi",
+              "pl",
+              "ps",
+              "pt",
+              "qu",
+              "rm",
+              "rn",
+              "ro",
+              "ru",
+              "rw",
+              "sa",
+              "sc",
+              "sd",
+              "se",
+              "sg",
+              "si",
+              "sk",
+              "sl",
+              "sm",
+              "sn",
+              "so",
+              "sq",
+              "sr",
+              "ss",
+              "st",
+              "su",
+              "sv",
+              "sw",
+              "ta",
+              "te",
+              "tg",
+              "th",
+              "ti",
+              "tk",
+              "tl",
+              "tn",
+              "to",
+              "tr",
+              "ts",
+              "tt",
+              "tw",
+              "ty",
+              "ug",
+              "uk",
+              "ur",
+              "uz",
+              "ve",
+              "vi",
+              "vo",
+              "wa",
+              "wo",
+              "xh",
+              "yi",
+              "yue",
+              "yo",
+              "za",
+              "zh",
+              "zu"
             ]
           },
           "fallbackPlan": {
@@ -6391,7 +6646,8 @@
               {
                 "enum": [
                   "fast",
-                  "accurate"
+                  "accurate",
+                  "solaria-1"
                 ]
               }
             ]
@@ -6412,6 +6668,111 @@
           "language": {
             "type": "string",
             "description": "Defines the language to use for the transcription. Required when languageBehaviour is 'manual'.",
+            "enum": [
+              "af",
+              "sq",
+              "am",
+              "ar",
+              "hy",
+              "as",
+              "az",
+              "ba",
+              "eu",
+              "be",
+              "bn",
+              "bs",
+              "br",
+              "bg",
+              "ca",
+              "zh",
+              "hr",
+              "cs",
+              "da",
+              "nl",
+              "en",
+              "et",
+              "fo",
+              "fi",
+              "fr",
+              "gl",
+              "ka",
+              "de",
+              "el",
+              "gu",
+              "ht",
+              "ha",
+              "haw",
+              "he",
+              "hi",
+              "hu",
+              "is",
+              "id",
+              "it",
+              "ja",
+              "jv",
+              "kn",
+              "kk",
+              "km",
+              "ko",
+              "lo",
+              "la",
+              "lv",
+              "ln",
+              "lt",
+              "lb",
+              "mk",
+              "mg",
+              "ms",
+              "ml",
+              "mt",
+              "mi",
+              "mr",
+              "mn",
+              "my",
+              "ne",
+              "no",
+              "nn",
+              "oc",
+              "ps",
+              "fa",
+              "pl",
+              "pt",
+              "pa",
+              "ro",
+              "ru",
+              "sa",
+              "sr",
+              "sn",
+              "sd",
+              "si",
+              "sk",
+              "sl",
+              "so",
+              "es",
+              "su",
+              "sw",
+              "sv",
+              "tl",
+              "tg",
+              "ta",
+              "tt",
+              "te",
+              "th",
+              "bo",
+              "tr",
+              "tk",
+              "uk",
+              "ur",
+              "uz",
+              "vi",
+              "cy",
+              "yi",
+              "yo"
+            ]
+          },
+          "languages": {
+            "type": "string",
+            "description": "Defines the languages to use for the transcription. Required when languageBehaviour is 'manual'.",
             "enum": [
               "af",
               "sq",
@@ -6985,6 +7346,35 @@
             "maximum": 1,
             "example": 0.4
           },
+          "enableUniversalStreamingApi": {
+            "type": "boolean",
+            "description": "Uses Assembly AI's new Universal Streaming API. See: https://www.assemblyai.com/docs/speech-to-text/universal-streaming\n\n@default false",
+            "example": false
+          },
+          "endOfTurnConfidenceThreshold": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "example": 0.7
+          },
+          "minEndOfTurnSilenceWhenConfident": {
+            "type": "number",
+            "description": "The minimum amount of silence in milliseconds required to detect end of turn when confident. Only used when `enableUniversalStreamingApi` is true.\n\n@default 160",
+            "minimum": 0,
+            "example": 160
+          },
+          "wordFinalizationMaxWaitTime": {
+            "type": "number",
+            "description": "The maximum wait time for word finalization. Only used when `enableUniversalStreamingApi` is true.\n\n@default 160",
+            "minimum": 0,
+            "example": 160
+          },
+          "maxTurnSilence": {
+            "type": "number",
+            "description": "The maximum amount of silence in milliseconds allowed in a turn before end of turn is triggered. Only used when `enableUniversalStreamingApi` is true.\n\n@default 400",
+            "minimum": 0,
+            "example": 400
+          },
           "realtimeUrl": {
             "type": "string",
             "description": "The WebSocket URL that the transcriber connects to."
@@ -7167,6 +7557,216 @@
               "zh-HK",
               "zh-TW",
               "zu-ZA"
+            ]
+          }
+        },
+        "required": [
+          "provider"
+        ]
+      },
+      "FallbackCartesiaTranscriber": {
+        "type": "object",
+        "properties": {
+          "provider": {
+            "type": "string",
+            "enum": [
+              "cartesia"
+            ]
+          },
+          "model": {
+            "type": "string",
+            "enum": [
+              "ink-whisper"
+            ]
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "aa",
+              "ab",
+              "ae",
+              "af",
+              "ak",
+              "am",
+              "an",
+              "ar",
+              "as",
+              "av",
+              "ay",
+              "az",
+              "ba",
+              "be",
+              "bg",
+              "bh",
+              "bi",
+              "bm",
+              "bn",
+              "bo",
+              "br",
+              "bs",
+              "ca",
+              "ce",
+              "ch",
+              "co",
+              "cr",
+              "cs",
+              "cu",
+              "cv",
+              "cy",
+              "da",
+              "de",
+              "dv",
+              "dz",
+              "ee",
+              "el",
+              "en",
+              "eo",
+              "es",
+              "et",
+              "eu",
+              "fa",
+              "ff",
+              "fi",
+              "fj",
+              "fo",
+              "fr",
+              "fy",
+              "ga",
+              "gd",
+              "gl",
+              "gn",
+              "gu",
+              "gv",
+              "ha",
+              "he",
+              "hi",
+              "ho",
+              "hr",
+              "ht",
+              "hu",
+              "hy",
+              "hz",
+              "ia",
+              "id",
+              "ie",
+              "ig",
+              "ii",
+              "ik",
+              "io",
+              "is",
+              "it",
+              "iu",
+              "ja",
+              "jv",
+              "ka",
+              "kg",
+              "ki",
+              "kj",
+              "kk",
+              "kl",
+              "km",
+              "kn",
+              "ko",
+              "kr",
+              "ks",
+              "ku",
+              "kv",
+              "kw",
+              "ky",
+              "la",
+              "lb",
+              "lg",
+              "li",
+              "ln",
+              "lo",
+              "lt",
+              "lu",
+              "lv",
+              "mg",
+              "mh",
+              "mi",
+              "mk",
+              "ml",
+              "mn",
+              "mr",
+              "ms",
+              "mt",
+              "my",
+              "na",
+              "nb",
+              "nd",
+              "ne",
+              "ng",
+              "nl",
+              "nn",
+              "no",
+              "nr",
+              "nv",
+              "ny",
+              "oc",
+              "oj",
+              "om",
+              "or",
+              "os",
+              "pa",
+              "pi",
+              "pl",
+              "ps",
+              "pt",
+              "qu",
+              "rm",
+              "rn",
+              "ro",
+              "ru",
+              "rw",
+              "sa",
+              "sc",
+              "sd",
+              "se",
+              "sg",
+              "si",
+              "sk",
+              "sl",
+              "sm",
+              "sn",
+              "so",
+              "sq",
+              "sr",
+              "ss",
+              "st",
+              "su",
+              "sv",
+              "sw",
+              "ta",
+              "te",
+              "tg",
+              "th",
+              "ti",
+              "tk",
+              "tl",
+              "tn",
+              "to",
+              "tr",
+              "ts",
+              "tt",
+              "tw",
+              "ty",
+              "ug",
+              "uk",
+              "ur",
+              "uz",
+              "ve",
+              "vi",
+              "vo",
+              "wa",
+              "wo",
+              "xh",
+              "yi",
+              "yue",
+              "yo",
+              "za",
+              "zh",
+              "zu"
             ]
           }
         },
@@ -7619,7 +8219,8 @@
               {
                 "enum": [
                   "fast",
-                  "accurate"
+                  "accurate",
+                  "solaria-1"
                 ]
               }
             ]
@@ -7640,6 +8241,111 @@
           "language": {
             "type": "string",
             "description": "Defines the language to use for the transcription. Required when languageBehaviour is 'manual'.",
+            "enum": [
+              "af",
+              "sq",
+              "am",
+              "ar",
+              "hy",
+              "as",
+              "az",
+              "ba",
+              "eu",
+              "be",
+              "bn",
+              "bs",
+              "br",
+              "bg",
+              "ca",
+              "zh",
+              "hr",
+              "cs",
+              "da",
+              "nl",
+              "en",
+              "et",
+              "fo",
+              "fi",
+              "fr",
+              "gl",
+              "ka",
+              "de",
+              "el",
+              "gu",
+              "ht",
+              "ha",
+              "haw",
+              "he",
+              "hi",
+              "hu",
+              "is",
+              "id",
+              "it",
+              "ja",
+              "jv",
+              "kn",
+              "kk",
+              "km",
+              "ko",
+              "lo",
+              "la",
+              "lv",
+              "ln",
+              "lt",
+              "lb",
+              "mk",
+              "mg",
+              "ms",
+              "ml",
+              "mt",
+              "mi",
+              "mr",
+              "mn",
+              "my",
+              "ne",
+              "no",
+              "nn",
+              "oc",
+              "ps",
+              "fa",
+              "pl",
+              "pt",
+              "pa",
+              "ro",
+              "ru",
+              "sa",
+              "sr",
+              "sn",
+              "sd",
+              "si",
+              "sk",
+              "sl",
+              "so",
+              "es",
+              "su",
+              "sw",
+              "sv",
+              "tl",
+              "tg",
+              "ta",
+              "tt",
+              "te",
+              "th",
+              "bo",
+              "tr",
+              "tk",
+              "uk",
+              "ur",
+              "uz",
+              "vi",
+              "cy",
+              "yi",
+              "yo"
+            ]
+          },
+          "languages": {
+            "type": "string",
+            "description": "Defines the languages to use for the transcription. Required when languageBehaviour is 'manual'.",
             "enum": [
               "af",
               "sq",
@@ -9194,6 +9900,13 @@
                 "$ref": "#/components/schemas/CustomMessage"
               }
             ]
+          },
+          "timeout": {
+            "type": "number",
+            "description": "This is the timeout in seconds for the warm-transfer-wait-for-operator-to-speak-first-and-then-say-message/summary\n\n@default 60",
+            "minimum": 1,
+            "maximum": 600,
+            "default": 60
           },
           "sipVerb": {
             "type": "object",
@@ -12666,7 +13379,16 @@
       },
       "VariableExtractionPlan": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "schema": {
+            "description": "This is the schema of parameters we want to extract from the response",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/JsonSchema"
+              }
+            ]
+          }
+        }
       },
       "ConversationNode": {
         "type": "object",
@@ -12733,6 +13455,10 @@
               {
                 "$ref": "#/components/schemas/OpenAITranscriber",
                 "title": "OpenAITranscriber"
+              },
+              {
+                "$ref": "#/components/schemas/CartesiaTranscriber",
+                "title": "CartesiaTranscriber"
               }
             ]
           },
@@ -12972,39 +13698,6 @@
           "prompt"
         ]
       },
-      "LogicEdgeCondition": {
-        "type": "object",
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "logic"
-            ]
-          },
-          "liquid": {
-            "type": "string",
-            "maxLength": 1000
-          }
-        },
-        "required": [
-          "type",
-          "liquid"
-        ]
-      },
-      "FailedEdgeCondition": {
-        "type": "object",
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "failed"
-            ]
-          }
-        },
-        "required": [
-          "type"
-        ]
-      },
       "Edge": {
         "type": "object",
         "properties": {
@@ -13013,14 +13706,6 @@
               {
                 "$ref": "#/components/schemas/AIEdgeCondition",
                 "title": "AIEdgeCondition"
-              },
-              {
-                "$ref": "#/components/schemas/LogicEdgeCondition",
-                "title": "LogicEdgeCondition"
-              },
-              {
-                "$ref": "#/components/schemas/FailedEdgeCondition",
-                "title": "FailedEdgeCondition"
               }
             ]
           },
@@ -13060,18 +13745,6 @@
               ]
             }
           },
-          "model": {
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/WorkflowOpenAIModel",
-                "title": "WorkflowOpenAIModel"
-              },
-              {
-                "$ref": "#/components/schemas/WorkflowAnthropicModel",
-                "title": "WorkflowAnthropicModel"
-              }
-            ]
-          },
           "name": {
             "type": "string",
             "maxLength": 80
@@ -13085,6 +13758,14 @@
           "globalPrompt": {
             "type": "string",
             "maxLength": 5000
+          },
+          "server": {
+            "description": "This is where Vapi will send webhooks. You can find all webhooks available along with their shape in ServerMessage schema.\n\nThe order of precedence is:\n\n1. tool.server\n2. workflow.server / assistant.server\n3. phoneNumber.server\n4. org.server",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Server"
+              }
+            ]
           }
         },
         "required": [
@@ -16423,6 +17104,85 @@
           "provider"
         ]
       },
+      "SmartDenoisingPlan": {
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether smart denoising using Krisp is enabled.",
+            "default": false
+          }
+        }
+      },
+      "FourierDenoisingPlan": {
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether Fourier denoising is enabled. Note that this is experimental and may not work as expected.",
+            "default": false
+          },
+          "mediaDetectionEnabled": {
+            "type": "boolean",
+            "description": "Whether automatic media detection is enabled. When enabled, the filter will automatically\ndetect consistent background TV/music/radio and switch to more aggressive filtering settings.\nOnly applies when enabled is true.",
+            "example": true,
+            "default": true
+          },
+          "staticThreshold": {
+            "type": "number",
+            "description": "Static threshold in dB used as fallback when no baseline is established.",
+            "example": -35,
+            "minimum": -80,
+            "maximum": 0,
+            "default": -35
+          },
+          "baselineOffsetDb": {
+            "type": "number",
+            "description": "How far below the rolling baseline to filter audio, in dB.\nLower values (e.g., -10) are more aggressive, higher values (e.g., -20) are more conservative.",
+            "example": -15,
+            "minimum": -30,
+            "maximum": -5,
+            "default": -15
+          },
+          "windowSizeMs": {
+            "type": "number",
+            "description": "Rolling window size in milliseconds for calculating the audio baseline.\nLarger windows adapt more slowly but are more stable.",
+            "example": 3000,
+            "minimum": 1000,
+            "maximum": 30000,
+            "default": 3000
+          },
+          "baselinePercentile": {
+            "type": "number",
+            "description": "Percentile to use for baseline calculation (1-99).\nHigher percentiles (e.g., 85) focus on louder speech, lower percentiles (e.g., 50) include quieter speech.",
+            "example": 85,
+            "minimum": 1,
+            "maximum": 99,
+            "default": 85
+          }
+        }
+      },
+      "BackgroundSpeechDenoisingPlan": {
+        "type": "object",
+        "properties": {
+          "smartDenoisingPlan": {
+            "description": "Whether smart denoising using Krisp is enabled.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SmartDenoisingPlan"
+              }
+            ]
+          },
+          "fourierDenoisingPlan": {
+            "description": "Whether Fourier denoising is enabled. Note that this is experimental and may not work as expected.\n\nThis can be combined with smart denoising, and will be run afterwards.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FourierDenoisingPlan"
+              }
+            ]
+          }
+        }
+      },
       "CreateAnthropicCredentialDTO": {
         "type": "object",
         "properties": {
@@ -16567,6 +17327,11 @@
             "type": "string",
             "description": "This is not returned in the API.",
             "maxLength": 10000
+          },
+          "fallbackIndex": {
+            "type": "number",
+            "minimum": 1,
+            "description": "This is the order in which this storage provider is tried during upload retries. Lower numbers are tried first in increasing order."
           },
           "bucketPlan": {
             "description": "This is the bucket plan that can be provided to store call artifacts in Azure Blob Storage.",
@@ -16905,6 +17670,11 @@
             "type": "string",
             "description": "Cloudflare Account Email."
           },
+          "fallbackIndex": {
+            "type": "number",
+            "description": "This is the order in which this storage provider is tried during upload retries. Lower numbers are tried first in increasing order.",
+            "minimum": 1
+          },
           "bucketPlan": {
             "description": "This is the bucket plan that can be provided to store call artifacts in R2",
             "allOf": [
@@ -17196,6 +17966,11 @@
             "enum": [
               "gcp"
             ]
+          },
+          "fallbackIndex": {
+            "type": "number",
+            "description": "This is the order in which this storage provider is tried during upload retries. Lower numbers are tried first in increasing order.",
+            "minimum": 1
           },
           "gcpKey": {
             "description": "This is the GCP key. This is the JSON that can be generated in the Google Cloud Console at https://console.cloud.google.com/iam-admin/serviceaccounts/details/<service-account-id>/keys.\n\nThe schema is identical to the JSON that GCP outputs.",
@@ -17579,6 +18354,11 @@
             "type": "string",
             "description": "The path prefix for the uploaded recording. Ex. \"recordings/\""
           },
+          "fallbackIndex": {
+            "type": "number",
+            "minimum": 1,
+            "description": "This is the order in which this storage provider is tried during upload retries. Lower numbers are tried first in increasing order."
+          },
           "name": {
             "type": "string",
             "description": "This is the name of credential. This is just for your reference.",
@@ -17658,6 +18438,11 @@
               "supabase"
             ],
             "description": "This is for supabase storage."
+          },
+          "fallbackIndex": {
+            "type": "number",
+            "minimum": 1,
+            "description": "This is the order in which this storage provider is tried during upload retries. Lower numbers are tried first in increasing order."
           },
           "bucketPlan": {
             "$ref": "#/components/schemas/SupabaseBucketPlan"
@@ -18512,6 +19297,11 @@
       "AnalysisPlan": {
         "type": "object",
         "properties": {
+          "minMessagesThreshold": {
+            "type": "number",
+            "description": "The minimum number of messages required to run the analysis plan.\nIf the number of messages is less than this, analysis will be skipped.\n@default 2",
+            "minimum": 0
+          },
           "summaryPlan": {
             "description": "This is the plan for generating the summary of the call. This outputs to `call.analysis.summary`.",
             "allOf": [
@@ -19057,6 +19847,10 @@
               {
                 "$ref": "#/components/schemas/OpenAITranscriber",
                 "title": "OpenAITranscriber"
+              },
+              {
+                "$ref": "#/components/schemas/CartesiaTranscriber",
+                "title": "CartesiaTranscriber"
               }
             ]
           },
@@ -19375,7 +20169,6 @@
           },
           "backgroundDenoisingEnabled": {
             "type": "boolean",
-            "description": "This enables filtering of noise and background speech while the user is talking.\n\nDefault `false` while in beta.\n\n@default false",
             "example": false
           },
           "modelOutputInMessagesEnabled": {
@@ -19713,6 +20506,14 @@
             "type": "object",
             "description": "This is for metadata you want to store on the assistant."
           },
+          "backgroundSpeechDenoisingPlan": {
+            "description": "This enables filtering of noise and background speech while the user is talking.\n\nFeatures:\n- Smart denoising using Krisp\n- Fourier denoising\n\nSmart denoising can be combined with or used independently of Fourier denoising.\n\nOrder of precedence:\n- Smart denoising\n- Fourier denoising",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BackgroundSpeechDenoisingPlan"
+              }
+            ]
+          },
           "analysisPlan": {
             "description": "This is the plan for analysis of assistant's calls. Stored in `call.analysis`.",
             "allOf": [
@@ -19826,6 +20627,10 @@
               {
                 "$ref": "#/components/schemas/OpenAITranscriber",
                 "title": "OpenAITranscriber"
+              },
+              {
+                "$ref": "#/components/schemas/CartesiaTranscriber",
+                "title": "CartesiaTranscriber"
               }
             ]
           },
@@ -20144,7 +20949,6 @@
           },
           "backgroundDenoisingEnabled": {
             "type": "boolean",
-            "description": "This enables filtering of noise and background speech while the user is talking.\n\nDefault `false` while in beta.\n\n@default false",
             "example": false
           },
           "modelOutputInMessagesEnabled": {
@@ -20486,6 +21290,14 @@
             "type": "object",
             "description": "This is for metadata you want to store on the assistant."
           },
+          "backgroundSpeechDenoisingPlan": {
+            "description": "This enables filtering of noise and background speech while the user is talking.\n\nFeatures:\n- Smart denoising using Krisp\n- Fourier denoising\n\nSmart denoising can be combined with or used independently of Fourier denoising.\n\nOrder of precedence:\n- Smart denoising\n- Fourier denoising",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BackgroundSpeechDenoisingPlan"
+              }
+            ]
+          },
           "analysisPlan": {
             "description": "This is the plan for analysis of assistant's calls. Stored in `call.analysis`.",
             "allOf": [
@@ -20632,18 +21444,6 @@
               ]
             }
           },
-          "model": {
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/WorkflowOpenAIModel",
-                "title": "WorkflowOpenAIModel"
-              },
-              {
-                "$ref": "#/components/schemas/WorkflowAnthropicModel",
-                "title": "WorkflowAnthropicModel"
-              }
-            ]
-          },
           "name": {
             "type": "string",
             "maxLength": 80
@@ -20657,6 +21457,14 @@
           "globalPrompt": {
             "type": "string",
             "maxLength": 5000
+          },
+          "server": {
+            "description": "This is where Vapi will send webhooks. You can find all webhooks available along with their shape in ServerMessage schema.\n\nThe order of precedence is:\n\n1. tool.server\n2. workflow.server / assistant.server\n3. phoneNumber.server\n4. org.server",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Server"
+              }
+            ]
           }
         },
         "required": [
@@ -20664,6 +21472,15 @@
           "name",
           "edges"
         ]
+      },
+      "WorkflowOverrides": {
+        "type": "object",
+        "properties": {
+          "variableValues": {
+            "type": "object",
+            "description": "These are values that will be used to replace the template variables in the workflow messages and other text-based fields.\nThis uses LiquidJS syntax. https://liquidjs.com/tutorials/intro-to-liquid.html\n\nSo for example, `{{ name }}` will be replaced with the value of `name` in `variableValues`.\n`{{\"now\" | date: \"%b %d, %Y, %I:%M %p\", \"America/New_York\"}}` will be replaced with the current date and time in New York.\n Some VAPI reserved defaults:\n - *customer* - the customer object"
+          }
+        }
       },
       "TransferPhoneNumberHookAction": {
         "type": "object",
@@ -21011,8 +21828,9 @@
               "assistant-request-returned-invalid-assistant",
               "assistant-request-returned-no-assistant",
               "assistant-request-returned-forwarding-phone-number",
-              "call.start.error-get-org",
-              "call.start.error-get-subscription",
+              "scheduled-call-deleted",
+              "call.start.error-vapifault-get-org",
+              "call.start.error-vapifault-get-subscription",
               "call.start.error-get-assistant",
               "call.start.error-get-phone-number",
               "call.start.error-get-customer",
@@ -21020,6 +21838,11 @@
               "call.start.error-vapi-number-international",
               "call.start.error-vapi-number-outbound-daily-limit",
               "call.start.error-get-transport",
+              "call.start.error-subscription-wallet-does-not-exist",
+              "call.start.error-subscription-frozen",
+              "call.start.error-subscription-insufficient-credits",
+              "call.start.error-subscription-upgrade-failed",
+              "call.start.error-subscription-concurrency-limit-reached",
               "assistant-not-valid",
               "database-error",
               "assistant-not-found",
@@ -21087,7 +21910,6 @@
               "call.in-progress.error-vapifault-azure-speech-transcriber-failed",
               "call.in-progress.error-pipeline-no-available-llm-model",
               "worker-shutdown",
-              "unknown-error",
               "vonage-disconnected",
               "vonage-failed-to-connect-call",
               "vonage-completed",
@@ -21098,6 +21920,8 @@
               "call.in-progress.error-vapifault-transport-connected-but-call-not-active",
               "call.in-progress.error-vapifault-call-started-but-connection-to-transport-missing",
               "call.in-progress.error-vapifault-worker-died",
+              "call.in-progress.twilio-completed-call",
+              "call.in-progress.sip-completed-call",
               "call.in-progress.error-vapifault-openai-llm-failed",
               "call.in-progress.error-vapifault-azure-openai-llm-failed",
               "call.in-progress.error-vapifault-groq-llm-failed",
@@ -21107,6 +21931,7 @@
               "call.in-progress.error-vapifault-inflection-ai-llm-failed",
               "call.in-progress.error-vapifault-cerebras-llm-failed",
               "call.in-progress.error-vapifault-deep-seek-llm-failed",
+              "call.in-progress.error-vapifault-chat-pipeline-failed-to-start",
               "pipeline-error-openai-400-bad-request-validation-failed",
               "pipeline-error-openai-401-unauthorized",
               "pipeline-error-openai-401-incorrect-api-key",
@@ -21374,6 +22199,7 @@
               "pipeline-error-cartesia-socket-hang-up",
               "pipeline-error-cartesia-requested-payment",
               "pipeline-error-cartesia-500-server-error",
+              "pipeline-error-cartesia-502-server-error",
               "pipeline-error-cartesia-503-server-error",
               "pipeline-error-cartesia-522-server-error",
               "call.in-progress.error-vapifault-cartesia-socket-hang-up",
@@ -21394,6 +22220,7 @@
               "pipeline-error-eleven-labs-invalid-api-key",
               "pipeline-error-eleven-labs-invalid-voice-samples",
               "pipeline-error-eleven-labs-voice-disabled-by-owner",
+              "pipeline-error-eleven-labs-vapi-voice-disabled-by-owner",
               "pipeline-error-eleven-labs-blocked-account-in-probation",
               "pipeline-error-eleven-labs-blocked-content-against-their-policy",
               "pipeline-error-eleven-labs-missing-samples-for-voice-clone",
@@ -21402,6 +22229,7 @@
               "pipeline-error-eleven-labs-max-character-limit-exceeded",
               "pipeline-error-eleven-labs-blocked-voice-potentially-against-terms-of-service-and-awaiting-verification",
               "pipeline-error-eleven-labs-500-server-error",
+              "pipeline-error-eleven-labs-503-server-error",
               "call.in-progress.error-vapifault-eleven-labs-voice-not-found",
               "call.in-progress.error-vapifault-eleven-labs-quota-exceeded",
               "call.in-progress.error-vapifault-eleven-labs-unauthorized-access",
@@ -21423,6 +22251,7 @@
               "call.in-progress.error-vapifault-eleven-labs-max-character-limit-exceeded",
               "call.in-progress.error-vapifault-eleven-labs-blocked-voice-potentially-against-terms-of-service-and-awaiting-verification",
               "call.in-progress.error-providerfault-eleven-labs-500-server-error",
+              "call.in-progress.error-providerfault-eleven-labs-503-server-error",
               "pipeline-error-playht-request-timed-out",
               "pipeline-error-playht-invalid-voice",
               "pipeline-error-playht-unexpected-error",
@@ -21476,6 +22305,7 @@
               "assistant-forwarded-call",
               "assistant-join-timed-out",
               "call.in-progress.error-assistant-did-not-receive-customer-audio",
+              "call.in-progress.error-transfer-failed",
               "customer-busy",
               "customer-ended-call",
               "customer-did-not-answer",
@@ -21493,6 +22323,8 @@
               "call.in-progress.error-sip-outbound-call-failed-to-connect",
               "call.ringing.hook-executed-say",
               "call.ringing.hook-executed-transfer",
+              "call.ringing.sip-inbound-caller-hungup-before-call-connect",
+              "call.ringing.error-sip-inbound-call-failed-to-connect",
               "twilio-failed-to-connect-call",
               "twilio-reported-customer-misdialed",
               "vonage-rejected",
@@ -21623,13 +22455,21 @@
           },
           "workflowId": {
             "type": "string",
-            "description": "[BETA] This feature is in active development. The API and behavior are subject to change as we refine it based on user feedback.\n\nThis is the workflow that will be used for the call. To use a transient workflow, use `workflow` instead.\n\nTo start a call with:\n- Assistant, use `assistant` or `assistantId`\n- Squad, use `squad` or `squadId`\n- Workflow, use `workflow` or `workflowId`"
+            "description": "This is the workflow that will be used for the call. To use a transient workflow, use `workflow` instead.\n\nTo start a call with:\n- Assistant, use `assistant` or `assistantId`\n- Squad, use `squad` or `squadId`\n- Workflow, use `workflow` or `workflowId`"
           },
           "workflow": {
-            "description": "[BETA] This feature is in active development. The API and behavior are subject to change as we refine it based on user feedback.\n\nThis is a workflow that will be used for the call. To use an existing workflow, use `workflowId` instead.\n\nTo start a call with:\n- Assistant, use `assistant` or `assistantId`\n- Squad, use `squad` or `squadId`\n- Workflow, use `workflow` or `workflowId`",
+            "description": "This is a workflow that will be used for the call. To use an existing workflow, use `workflowId` instead.\n\nTo start a call with:\n- Assistant, use `assistant` or `assistantId`\n- Squad, use `squad` or `squadId`\n- Workflow, use `workflow` or `workflowId`",
             "allOf": [
               {
                 "$ref": "#/components/schemas/CreateWorkflowDTO"
+              }
+            ]
+          },
+          "workflowOverrides": {
+            "description": "These are the overrides for the `workflow` or `workflowId`'s settings and template variables.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/WorkflowOverrides"
               }
             ]
           },
@@ -21781,13 +22621,21 @@
           },
           "workflowId": {
             "type": "string",
-            "description": "[BETA] This feature is in active development. The API and behavior are subject to change as we refine it based on user feedback.\n\nThis is the workflow that will be used for the call. To use a transient workflow, use `workflow` instead.\n\nTo start a call with:\n- Assistant, use `assistant` or `assistantId`\n- Squad, use `squad` or `squadId`\n- Workflow, use `workflow` or `workflowId`"
+            "description": "This is the workflow that will be used for the call. To use a transient workflow, use `workflow` instead.\n\nTo start a call with:\n- Assistant, use `assistant` or `assistantId`\n- Squad, use `squad` or `squadId`\n- Workflow, use `workflow` or `workflowId`"
           },
           "workflow": {
-            "description": "[BETA] This feature is in active development. The API and behavior are subject to change as we refine it based on user feedback.\n\nThis is a workflow that will be used for the call. To use an existing workflow, use `workflowId` instead.\n\nTo start a call with:\n- Assistant, use `assistant` or `assistantId`\n- Squad, use `squad` or `squadId`\n- Workflow, use `workflow` or `workflowId`",
+            "description": "This is a workflow that will be used for the call. To use an existing workflow, use `workflowId` instead.\n\nTo start a call with:\n- Assistant, use `assistant` or `assistantId`\n- Squad, use `squad` or `squadId`\n- Workflow, use `workflow` or `workflowId`",
             "allOf": [
               {
                 "$ref": "#/components/schemas/CreateWorkflowDTO"
+              }
+            ]
+          },
+          "workflowOverrides": {
+            "description": "These are the overrides for the `workflow` or `workflowId`'s settings and template variables.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/WorkflowOverrides"
               }
             ]
           },
@@ -21915,13 +22763,21 @@
           },
           "workflowId": {
             "type": "string",
-            "description": "[BETA] This feature is in active development. The API and behavior are subject to change as we refine it based on user feedback.\n\nThis is the workflow that will be used for the call. To use a transient workflow, use `workflow` instead.\n\nTo start a call with:\n- Assistant, use `assistant` or `assistantId`\n- Squad, use `squad` or `squadId`\n- Workflow, use `workflow` or `workflowId`"
+            "description": "This is the workflow that will be used for the call. To use a transient workflow, use `workflow` instead.\n\nTo start a call with:\n- Assistant, use `assistant` or `assistantId`\n- Squad, use `squad` or `squadId`\n- Workflow, use `workflow` or `workflowId`"
           },
           "workflow": {
-            "description": "[BETA] This feature is in active development. The API and behavior are subject to change as we refine it based on user feedback.\n\nThis is a workflow that will be used for the call. To use an existing workflow, use `workflowId` instead.\n\nTo start a call with:\n- Assistant, use `assistant` or `assistantId`\n- Squad, use `squad` or `squadId`\n- Workflow, use `workflow` or `workflowId`",
+            "description": "This is a workflow that will be used for the call. To use an existing workflow, use `workflowId` instead.\n\nTo start a call with:\n- Assistant, use `assistant` or `assistantId`\n- Squad, use `squad` or `squadId`\n- Workflow, use `workflow` or `workflowId`",
             "allOf": [
               {
                 "$ref": "#/components/schemas/CreateWorkflowDTO"
+              }
+            ]
+          },
+          "workflowOverrides": {
+            "description": "These are the overrides for the `workflow` or `workflowId`'s settings and template variables.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/WorkflowOverrides"
               }
             ]
           },
@@ -21988,13 +22844,21 @@
           },
           "workflowId": {
             "type": "string",
-            "description": "[BETA] This feature is in active development. The API and behavior are subject to change as we refine it based on user feedback.\n\nThis is the workflow that will be used for the call. To use a transient workflow, use `workflow` instead.\n\nTo start a call with:\n- Assistant, use `assistant` or `assistantId`\n- Squad, use `squad` or `squadId`\n- Workflow, use `workflow` or `workflowId`"
+            "description": "This is the workflow that will be used for the call. To use a transient workflow, use `workflow` instead.\n\nTo start a call with:\n- Assistant, use `assistant` or `assistantId`\n- Squad, use `squad` or `squadId`\n- Workflow, use `workflow` or `workflowId`"
           },
           "workflow": {
-            "description": "[BETA] This feature is in active development. The API and behavior are subject to change as we refine it based on user feedback.\n\nThis is a workflow that will be used for the call. To use an existing workflow, use `workflowId` instead.\n\nTo start a call with:\n- Assistant, use `assistant` or `assistantId`\n- Squad, use `squad` or `squadId`\n- Workflow, use `workflow` or `workflowId`",
+            "description": "This is a workflow that will be used for the call. To use an existing workflow, use `workflowId` instead.\n\nTo start a call with:\n- Assistant, use `assistant` or `assistantId`\n- Squad, use `squad` or `squadId`\n- Workflow, use `workflow` or `workflowId`",
             "allOf": [
               {
                 "$ref": "#/components/schemas/CreateWorkflowDTO"
+              }
+            ]
+          },
+          "workflowOverrides": {
+            "description": "These are the overrides for the `workflow` or `workflowId`'s settings and template variables.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/WorkflowOverrides"
               }
             ]
           }
@@ -22384,6 +23248,26 @@
             "format": "date-time",
             "type": "string",
             "description": "This is the ISO 8601 date-time string of when the chat was last updated."
+          },
+          "costs": {
+            "type": "array",
+            "description": "These are the costs of individual components of the chat in USD.",
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/ModelCost",
+                  "title": "ModelCost"
+                },
+                {
+                  "$ref": "#/components/schemas/ChatCost",
+                  "title": "ChatCost"
+                }
+              ]
+            }
+          },
+          "cost": {
+            "type": "number",
+            "description": "This is the cost of the chat in USD."
           }
         },
         "required": [
@@ -23329,6 +24213,10 @@
               {
                 "$ref": "#/components/schemas/OpenAITranscriber",
                 "title": "OpenAITranscriber"
+              },
+              {
+                "$ref": "#/components/schemas/CartesiaTranscriber",
+                "title": "CartesiaTranscriber"
               }
             ]
           },
@@ -23647,7 +24535,6 @@
           },
           "backgroundDenoisingEnabled": {
             "type": "boolean",
-            "description": "This enables filtering of noise and background speech while the user is talking.\n\nDefault `false` while in beta.\n\n@default false",
             "example": false
           },
           "modelOutputInMessagesEnabled": {
@@ -23984,6 +24871,14 @@
           "metadata": {
             "type": "object",
             "description": "This is for metadata you want to store on the assistant."
+          },
+          "backgroundSpeechDenoisingPlan": {
+            "description": "This enables filtering of noise and background speech while the user is talking.\n\nFeatures:\n- Smart denoising using Krisp\n- Fourier denoising\n\nSmart denoising can be combined with or used independently of Fourier denoising.\n\nOrder of precedence:\n- Smart denoising\n- Fourier denoising",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BackgroundSpeechDenoisingPlan"
+              }
+            ]
           },
           "analysisPlan": {
             "description": "This is the plan for analysis of assistant's calls. Stored in `call.analysis`.",
@@ -24158,6 +25053,10 @@
               {
                 "$ref": "#/components/schemas/OpenAITranscriber",
                 "title": "OpenAITranscriber"
+              },
+              {
+                "$ref": "#/components/schemas/CartesiaTranscriber",
+                "title": "CartesiaTranscriber"
               }
             ]
           },
@@ -24476,7 +25375,6 @@
           },
           "backgroundDenoisingEnabled": {
             "type": "boolean",
-            "description": "This enables filtering of noise and background speech while the user is talking.\n\nDefault `false` while in beta.\n\n@default false",
             "example": false
           },
           "modelOutputInMessagesEnabled": {
@@ -24813,6 +25711,14 @@
           "metadata": {
             "type": "object",
             "description": "This is for metadata you want to store on the assistant."
+          },
+          "backgroundSpeechDenoisingPlan": {
+            "description": "This enables filtering of noise and background speech while the user is talking.\n\nFeatures:\n- Smart denoising using Krisp\n- Fourier denoising\n\nSmart denoising can be combined with or used independently of Fourier denoising.\n\nOrder of precedence:\n- Smart denoising\n- Fourier denoising",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BackgroundSpeechDenoisingPlan"
+              }
+            ]
           },
           "analysisPlan": {
             "description": "This is the plan for analysis of assistant's calls. Stored in `call.analysis`.",
@@ -27972,8 +28878,9 @@
           },
           "name": {
             "type": "string",
-            "description": "This is the name of the tool. This will be passed to the model.",
-            "maxLength": 40
+            "description": "This is the name of the tool. This will be passed to the model.\n\nMust be a-z, A-Z, 0-9, or contain underscores and dashes, with a maximum length of 40.",
+            "maxLength": 40,
+            "pattern": "/^[a-zA-Z0-9_-]{1,40}$/"
           },
           "description": {
             "type": "string",
@@ -28005,6 +28912,14 @@
             "allOf": [
               {
                 "$ref": "#/components/schemas/BackoffPlan"
+              }
+            ]
+          },
+          "variableExtractionPlan": {
+            "description": "This is the plan that controls the variable extraction from the tool's response.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/VariableExtractionPlan"
               }
             ]
           },
@@ -29644,18 +30559,6 @@
               ]
             }
           },
-          "model": {
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/WorkflowOpenAIModel",
-                "title": "WorkflowOpenAIModel"
-              },
-              {
-                "$ref": "#/components/schemas/WorkflowAnthropicModel",
-                "title": "WorkflowAnthropicModel"
-              }
-            ]
-          },
           "id": {
             "type": "string"
           },
@@ -29683,6 +30586,14 @@
           "globalPrompt": {
             "type": "string",
             "maxLength": 5000
+          },
+          "server": {
+            "description": "This is where Vapi will send webhooks. You can find all webhooks available along with their shape in ServerMessage schema.\n\nThe order of precedence is:\n\n1. tool.server\n2. workflow.server / assistant.server\n3. phoneNumber.server\n4. org.server",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Server"
+              }
+            ]
           }
         },
         "required": [
@@ -29713,18 +30624,6 @@
               ]
             }
           },
-          "model": {
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/WorkflowOpenAIModel",
-                "title": "WorkflowOpenAIModel"
-              },
-              {
-                "$ref": "#/components/schemas/WorkflowAnthropicModel",
-                "title": "WorkflowAnthropicModel"
-              }
-            ]
-          },
           "name": {
             "type": "string",
             "maxLength": 80
@@ -29738,6 +30637,14 @@
           "globalPrompt": {
             "type": "string",
             "maxLength": 5000
+          },
+          "server": {
+            "description": "This is where Vapi will send webhooks. You can find all webhooks available along with their shape in ServerMessage schema.\n\nThe order of precedence is:\n\n1. tool.server\n2. workflow.server / assistant.server\n3. phoneNumber.server\n4. org.server",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Server"
+              }
+            ]
           }
         }
       },
@@ -31937,6 +32844,11 @@
             "description": "This is not returned in the API.",
             "maxLength": 10000
           },
+          "fallbackIndex": {
+            "type": "number",
+            "minimum": 1,
+            "description": "This is the order in which this storage provider is tried during upload retries. Lower numbers are tried first in increasing order."
+          },
           "id": {
             "type": "string",
             "description": "This is the unique identifier for the credential."
@@ -32298,6 +33210,11 @@
             "type": "string",
             "description": "Cloudflare Account Email."
           },
+          "fallbackIndex": {
+            "type": "number",
+            "description": "This is the order in which this storage provider is tried during upload retries. Lower numbers are tried first in increasing order.",
+            "minimum": 1
+          },
           "id": {
             "type": "string",
             "description": "This is the unique identifier for the credential."
@@ -32622,6 +33539,11 @@
             "enum": [
               "gcp"
             ]
+          },
+          "fallbackIndex": {
+            "type": "number",
+            "description": "This is the order in which this storage provider is tried during upload retries. Lower numbers are tried first in increasing order.",
+            "minimum": 1
           },
           "id": {
             "type": "string",
@@ -33532,6 +34454,11 @@
             "type": "string",
             "description": "The path prefix for the uploaded recording. Ex. \"recordings/\""
           },
+          "fallbackIndex": {
+            "type": "number",
+            "minimum": 1,
+            "description": "This is the order in which this storage provider is tried during upload retries. Lower numbers are tried first in increasing order."
+          },
           "id": {
             "type": "string",
             "description": "This is the unique identifier for the credential."
@@ -33673,6 +34600,11 @@
               "supabase"
             ],
             "description": "This is for supabase storage."
+          },
+          "fallbackIndex": {
+            "type": "number",
+            "minimum": 1,
+            "description": "This is the order in which this storage provider is tried during upload retries. Lower numbers are tried first in increasing order."
           },
           "id": {
             "type": "string",
@@ -34639,6 +35571,11 @@
             "description": "This is not returned in the API.",
             "maxLength": 10000
           },
+          "fallbackIndex": {
+            "type": "number",
+            "minimum": 1,
+            "description": "This is the order in which this storage provider is tried during upload retries. Lower numbers are tried first in increasing order."
+          },
           "name": {
             "type": "string",
             "description": "This is the name of credential. This is just for your reference.",
@@ -34836,6 +35773,11 @@
             "type": "string",
             "description": "Cloudflare Account Email."
           },
+          "fallbackIndex": {
+            "type": "number",
+            "description": "This is the order in which this storage provider is tried during upload retries. Lower numbers are tried first in increasing order.",
+            "minimum": 1
+          },
           "name": {
             "type": "string",
             "description": "This is the name of credential. This is just for your reference.",
@@ -34944,6 +35886,11 @@
       "UpdateGcpCredentialDTO": {
         "type": "object",
         "properties": {
+          "fallbackIndex": {
+            "type": "number",
+            "description": "This is the order in which this storage provider is tried during upload retries. Lower numbers are tried first in increasing order.",
+            "minimum": 1
+          },
           "name": {
             "type": "string",
             "description": "This is the name of credential. This is just for your reference.",
@@ -35269,6 +36216,11 @@
             "type": "string",
             "description": "The path prefix for the uploaded recording. Ex. \"recordings/\""
           },
+          "fallbackIndex": {
+            "type": "number",
+            "minimum": 1,
+            "description": "This is the order in which this storage provider is tried during upload retries. Lower numbers are tried first in increasing order."
+          },
           "name": {
             "type": "string",
             "description": "This is the name of credential. This is just for your reference.",
@@ -35310,6 +36262,11 @@
       "UpdateSupabaseCredentialDTO": {
         "type": "object",
         "properties": {
+          "fallbackIndex": {
+            "type": "number",
+            "minimum": 1,
+            "description": "This is the order in which this storage provider is tried during upload retries. Lower numbers are tried first in increasing order."
+          },
           "name": {
             "type": "string",
             "description": "This is the name of credential. This is just for your reference.",
@@ -37912,6 +38869,14 @@
                 "$ref": "#/components/schemas/Call"
               }
             ]
+          },
+          "chat": {
+            "description": "This is the chat object.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Chat"
+              }
+            ]
           }
         },
         "required": [
@@ -38023,6 +38988,14 @@
                 "$ref": "#/components/schemas/Call"
               }
             ]
+          },
+          "chat": {
+            "description": "This is the chat object.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Chat"
+              }
+            ]
           }
         },
         "required": [
@@ -38076,8 +39049,9 @@
               "assistant-request-returned-invalid-assistant",
               "assistant-request-returned-no-assistant",
               "assistant-request-returned-forwarding-phone-number",
-              "call.start.error-get-org",
-              "call.start.error-get-subscription",
+              "scheduled-call-deleted",
+              "call.start.error-vapifault-get-org",
+              "call.start.error-vapifault-get-subscription",
               "call.start.error-get-assistant",
               "call.start.error-get-phone-number",
               "call.start.error-get-customer",
@@ -38085,6 +39059,11 @@
               "call.start.error-vapi-number-international",
               "call.start.error-vapi-number-outbound-daily-limit",
               "call.start.error-get-transport",
+              "call.start.error-subscription-wallet-does-not-exist",
+              "call.start.error-subscription-frozen",
+              "call.start.error-subscription-insufficient-credits",
+              "call.start.error-subscription-upgrade-failed",
+              "call.start.error-subscription-concurrency-limit-reached",
               "assistant-not-valid",
               "database-error",
               "assistant-not-found",
@@ -38152,7 +39131,6 @@
               "call.in-progress.error-vapifault-azure-speech-transcriber-failed",
               "call.in-progress.error-pipeline-no-available-llm-model",
               "worker-shutdown",
-              "unknown-error",
               "vonage-disconnected",
               "vonage-failed-to-connect-call",
               "vonage-completed",
@@ -38163,6 +39141,8 @@
               "call.in-progress.error-vapifault-transport-connected-but-call-not-active",
               "call.in-progress.error-vapifault-call-started-but-connection-to-transport-missing",
               "call.in-progress.error-vapifault-worker-died",
+              "call.in-progress.twilio-completed-call",
+              "call.in-progress.sip-completed-call",
               "call.in-progress.error-vapifault-openai-llm-failed",
               "call.in-progress.error-vapifault-azure-openai-llm-failed",
               "call.in-progress.error-vapifault-groq-llm-failed",
@@ -38172,6 +39152,7 @@
               "call.in-progress.error-vapifault-inflection-ai-llm-failed",
               "call.in-progress.error-vapifault-cerebras-llm-failed",
               "call.in-progress.error-vapifault-deep-seek-llm-failed",
+              "call.in-progress.error-vapifault-chat-pipeline-failed-to-start",
               "pipeline-error-openai-400-bad-request-validation-failed",
               "pipeline-error-openai-401-unauthorized",
               "pipeline-error-openai-401-incorrect-api-key",
@@ -38439,6 +39420,7 @@
               "pipeline-error-cartesia-socket-hang-up",
               "pipeline-error-cartesia-requested-payment",
               "pipeline-error-cartesia-500-server-error",
+              "pipeline-error-cartesia-502-server-error",
               "pipeline-error-cartesia-503-server-error",
               "pipeline-error-cartesia-522-server-error",
               "call.in-progress.error-vapifault-cartesia-socket-hang-up",
@@ -38459,6 +39441,7 @@
               "pipeline-error-eleven-labs-invalid-api-key",
               "pipeline-error-eleven-labs-invalid-voice-samples",
               "pipeline-error-eleven-labs-voice-disabled-by-owner",
+              "pipeline-error-eleven-labs-vapi-voice-disabled-by-owner",
               "pipeline-error-eleven-labs-blocked-account-in-probation",
               "pipeline-error-eleven-labs-blocked-content-against-their-policy",
               "pipeline-error-eleven-labs-missing-samples-for-voice-clone",
@@ -38467,6 +39450,7 @@
               "pipeline-error-eleven-labs-max-character-limit-exceeded",
               "pipeline-error-eleven-labs-blocked-voice-potentially-against-terms-of-service-and-awaiting-verification",
               "pipeline-error-eleven-labs-500-server-error",
+              "pipeline-error-eleven-labs-503-server-error",
               "call.in-progress.error-vapifault-eleven-labs-voice-not-found",
               "call.in-progress.error-vapifault-eleven-labs-quota-exceeded",
               "call.in-progress.error-vapifault-eleven-labs-unauthorized-access",
@@ -38488,6 +39472,7 @@
               "call.in-progress.error-vapifault-eleven-labs-max-character-limit-exceeded",
               "call.in-progress.error-vapifault-eleven-labs-blocked-voice-potentially-against-terms-of-service-and-awaiting-verification",
               "call.in-progress.error-providerfault-eleven-labs-500-server-error",
+              "call.in-progress.error-providerfault-eleven-labs-503-server-error",
               "pipeline-error-playht-request-timed-out",
               "pipeline-error-playht-invalid-voice",
               "pipeline-error-playht-unexpected-error",
@@ -38541,6 +39526,7 @@
               "assistant-forwarded-call",
               "assistant-join-timed-out",
               "call.in-progress.error-assistant-did-not-receive-customer-audio",
+              "call.in-progress.error-transfer-failed",
               "customer-busy",
               "customer-ended-call",
               "customer-did-not-answer",
@@ -38558,6 +39544,8 @@
               "call.in-progress.error-sip-outbound-call-failed-to-connect",
               "call.ringing.hook-executed-say",
               "call.ringing.hook-executed-transfer",
+              "call.ringing.sip-inbound-caller-hungup-before-call-connect",
+              "call.ringing.error-sip-inbound-call-failed-to-connect",
               "twilio-failed-to-connect-call",
               "twilio-reported-customer-misdialed",
               "vonage-rejected",
@@ -38641,6 +39629,14 @@
             "allOf": [
               {
                 "$ref": "#/components/schemas/Call"
+              }
+            ]
+          },
+          "chat": {
+            "description": "This is the chat object.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Chat"
               }
             ]
           },
@@ -38738,6 +39734,14 @@
             "allOf": [
               {
                 "$ref": "#/components/schemas/Call"
+              }
+            ]
+          },
+          "chat": {
+            "description": "This is the chat object.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Chat"
               }
             ]
           }
@@ -38851,6 +39855,14 @@
                 "$ref": "#/components/schemas/Call"
               }
             ]
+          },
+          "chat": {
+            "description": "This is the chat object.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Chat"
+              }
+            ]
           }
         },
         "required": [
@@ -38926,6 +39938,14 @@
             "allOf": [
               {
                 "$ref": "#/components/schemas/Call"
+              }
+            ]
+          },
+          "chat": {
+            "description": "This is the chat object.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Chat"
               }
             ]
           },
@@ -39030,6 +40050,14 @@
                 "$ref": "#/components/schemas/Call"
               }
             ]
+          },
+          "chat": {
+            "description": "This is the chat object.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Chat"
+              }
+            ]
           }
         },
         "required": [
@@ -39127,6 +40155,14 @@
                 "$ref": "#/components/schemas/Call"
               }
             ]
+          },
+          "chat": {
+            "description": "This is the chat object.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Chat"
+              }
+            ]
           }
         },
         "required": [
@@ -39193,8 +40229,9 @@
               "assistant-request-returned-invalid-assistant",
               "assistant-request-returned-no-assistant",
               "assistant-request-returned-forwarding-phone-number",
-              "call.start.error-get-org",
-              "call.start.error-get-subscription",
+              "scheduled-call-deleted",
+              "call.start.error-vapifault-get-org",
+              "call.start.error-vapifault-get-subscription",
               "call.start.error-get-assistant",
               "call.start.error-get-phone-number",
               "call.start.error-get-customer",
@@ -39202,6 +40239,11 @@
               "call.start.error-vapi-number-international",
               "call.start.error-vapi-number-outbound-daily-limit",
               "call.start.error-get-transport",
+              "call.start.error-subscription-wallet-does-not-exist",
+              "call.start.error-subscription-frozen",
+              "call.start.error-subscription-insufficient-credits",
+              "call.start.error-subscription-upgrade-failed",
+              "call.start.error-subscription-concurrency-limit-reached",
               "assistant-not-valid",
               "database-error",
               "assistant-not-found",
@@ -39269,7 +40311,6 @@
               "call.in-progress.error-vapifault-azure-speech-transcriber-failed",
               "call.in-progress.error-pipeline-no-available-llm-model",
               "worker-shutdown",
-              "unknown-error",
               "vonage-disconnected",
               "vonage-failed-to-connect-call",
               "vonage-completed",
@@ -39280,6 +40321,8 @@
               "call.in-progress.error-vapifault-transport-connected-but-call-not-active",
               "call.in-progress.error-vapifault-call-started-but-connection-to-transport-missing",
               "call.in-progress.error-vapifault-worker-died",
+              "call.in-progress.twilio-completed-call",
+              "call.in-progress.sip-completed-call",
               "call.in-progress.error-vapifault-openai-llm-failed",
               "call.in-progress.error-vapifault-azure-openai-llm-failed",
               "call.in-progress.error-vapifault-groq-llm-failed",
@@ -39289,6 +40332,7 @@
               "call.in-progress.error-vapifault-inflection-ai-llm-failed",
               "call.in-progress.error-vapifault-cerebras-llm-failed",
               "call.in-progress.error-vapifault-deep-seek-llm-failed",
+              "call.in-progress.error-vapifault-chat-pipeline-failed-to-start",
               "pipeline-error-openai-400-bad-request-validation-failed",
               "pipeline-error-openai-401-unauthorized",
               "pipeline-error-openai-401-incorrect-api-key",
@@ -39556,6 +40600,7 @@
               "pipeline-error-cartesia-socket-hang-up",
               "pipeline-error-cartesia-requested-payment",
               "pipeline-error-cartesia-500-server-error",
+              "pipeline-error-cartesia-502-server-error",
               "pipeline-error-cartesia-503-server-error",
               "pipeline-error-cartesia-522-server-error",
               "call.in-progress.error-vapifault-cartesia-socket-hang-up",
@@ -39576,6 +40621,7 @@
               "pipeline-error-eleven-labs-invalid-api-key",
               "pipeline-error-eleven-labs-invalid-voice-samples",
               "pipeline-error-eleven-labs-voice-disabled-by-owner",
+              "pipeline-error-eleven-labs-vapi-voice-disabled-by-owner",
               "pipeline-error-eleven-labs-blocked-account-in-probation",
               "pipeline-error-eleven-labs-blocked-content-against-their-policy",
               "pipeline-error-eleven-labs-missing-samples-for-voice-clone",
@@ -39584,6 +40630,7 @@
               "pipeline-error-eleven-labs-max-character-limit-exceeded",
               "pipeline-error-eleven-labs-blocked-voice-potentially-against-terms-of-service-and-awaiting-verification",
               "pipeline-error-eleven-labs-500-server-error",
+              "pipeline-error-eleven-labs-503-server-error",
               "call.in-progress.error-vapifault-eleven-labs-voice-not-found",
               "call.in-progress.error-vapifault-eleven-labs-quota-exceeded",
               "call.in-progress.error-vapifault-eleven-labs-unauthorized-access",
@@ -39605,6 +40652,7 @@
               "call.in-progress.error-vapifault-eleven-labs-max-character-limit-exceeded",
               "call.in-progress.error-vapifault-eleven-labs-blocked-voice-potentially-against-terms-of-service-and-awaiting-verification",
               "call.in-progress.error-providerfault-eleven-labs-500-server-error",
+              "call.in-progress.error-providerfault-eleven-labs-503-server-error",
               "pipeline-error-playht-request-timed-out",
               "pipeline-error-playht-invalid-voice",
               "pipeline-error-playht-unexpected-error",
@@ -39658,6 +40706,7 @@
               "assistant-forwarded-call",
               "assistant-join-timed-out",
               "call.in-progress.error-assistant-did-not-receive-customer-audio",
+              "call.in-progress.error-transfer-failed",
               "customer-busy",
               "customer-ended-call",
               "customer-did-not-answer",
@@ -39675,6 +40724,8 @@
               "call.in-progress.error-sip-outbound-call-failed-to-connect",
               "call.ringing.hook-executed-say",
               "call.ringing.hook-executed-transfer",
+              "call.ringing.sip-inbound-caller-hungup-before-call-connect",
+              "call.ringing.error-sip-inbound-call-failed-to-connect",
               "twilio-failed-to-connect-call",
               "twilio-reported-customer-misdialed",
               "vonage-rejected",
@@ -39762,6 +40813,14 @@
             "allOf": [
               {
                 "$ref": "#/components/schemas/Call"
+              }
+            ]
+          },
+          "chat": {
+            "description": "This is the chat object.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Chat"
               }
             ]
           },
@@ -39890,6 +40949,14 @@
               }
             ]
           },
+          "chat": {
+            "description": "This is the chat object.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Chat"
+              }
+            ]
+          },
           "toolCallList": {
             "description": "This is the list of tool calls that the model is requesting.",
             "type": "array",
@@ -39971,6 +41038,14 @@
             "allOf": [
               {
                 "$ref": "#/components/schemas/Call"
+              }
+            ]
+          },
+          "chat": {
+            "description": "This is the chat object.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Chat"
               }
             ]
           }
@@ -40064,6 +41139,14 @@
             "allOf": [
               {
                 "$ref": "#/components/schemas/Call"
+              }
+            ]
+          },
+          "chat": {
+            "description": "This is the chat object.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Chat"
               }
             ]
           },
@@ -40168,6 +41251,14 @@
               }
             ]
           },
+          "chat": {
+            "description": "This is the chat object.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Chat"
+              }
+            ]
+          },
           "role": {
             "type": "string",
             "description": "This is the role for which the transcript is for.",
@@ -40266,6 +41357,14 @@
                 "$ref": "#/components/schemas/Call"
               }
             ]
+          },
+          "chat": {
+            "description": "This is the chat object.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Chat"
+              }
+            ]
           }
         },
         "required": [
@@ -40340,6 +41439,14 @@
             "allOf": [
               {
                 "$ref": "#/components/schemas/Call"
+              }
+            ]
+          },
+          "chat": {
+            "description": "This is the chat object.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Chat"
               }
             ]
           },
@@ -40424,6 +41531,14 @@
               }
             ]
           },
+          "chat": {
+            "description": "This is the chat object.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Chat"
+              }
+            ]
+          },
           "input": {
             "type": "string",
             "description": "This is the voice input content"
@@ -40502,6 +41617,14 @@
             "allOf": [
               {
                 "$ref": "#/components/schemas/Call"
+              }
+            ]
+          },
+          "chat": {
+            "description": "This is the chat object.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Chat"
               }
             ]
           },
@@ -40651,13 +41774,21 @@
           },
           "workflowId": {
             "type": "string",
-            "description": "[BETA] This feature is in active development. The API and behavior are subject to change as we refine it based on user feedback.\n\nThis is the workflow that will be used for the call. To use a transient workflow, use `workflow` instead.\n\nTo start a call with:\n- Assistant, use `assistant` or `assistantId`\n- Squad, use `squad` or `squadId`\n- Workflow, use `workflow` or `workflowId`"
+            "description": "This is the workflow that will be used for the call. To use a transient workflow, use `workflow` instead.\n\nTo start a call with:\n- Assistant, use `assistant` or `assistantId`\n- Squad, use `squad` or `squadId`\n- Workflow, use `workflow` or `workflowId`"
           },
           "workflow": {
-            "description": "[BETA] This feature is in active development. The API and behavior are subject to change as we refine it based on user feedback.\n\nThis is a workflow that will be used for the call. To use an existing workflow, use `workflowId` instead.\n\nTo start a call with:\n- Assistant, use `assistant` or `assistantId`\n- Squad, use `squad` or `squadId`\n- Workflow, use `workflow` or `workflowId`",
+            "description": "This is a workflow that will be used for the call. To use an existing workflow, use `workflowId` instead.\n\nTo start a call with:\n- Assistant, use `assistant` or `assistantId`\n- Squad, use `squad` or `squadId`\n- Workflow, use `workflow` or `workflowId`",
             "allOf": [
               {
                 "$ref": "#/components/schemas/CreateWorkflowDTO"
+              }
+            ]
+          },
+          "workflowOverrides": {
+            "description": "These are the overrides for the `workflow` or `workflowId`'s settings and template variables.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/WorkflowOverrides"
               }
             ]
           },
@@ -40901,6 +42032,11 @@
               "say"
             ]
           },
+          "interruptAssistantEnabled": {
+            "type": "boolean",
+            "description": "This is the flag for whether the message should replace existing assistant speech.\n\n@default false",
+            "default": false
+          },
           "content": {
             "type": "string",
             "description": "This is the content to say."
@@ -40911,7 +42047,7 @@
           },
           "interruptionsEnabled": {
             "type": "boolean",
-            "description": "This is the flag for whether the message is interruptible."
+            "description": "This is the flag for whether the message is interruptible by the user."
           }
         }
       },
@@ -41406,6 +42542,26 @@
           "model",
           "promptTokens",
           "completionTokens",
+          "cost"
+        ]
+      },
+      "ChatCost": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "This is the type of cost, always 'chat' for this class.",
+            "enum": [
+              "chat"
+            ]
+          },
+          "cost": {
+            "type": "number",
+            "description": "This is the cost of the component in USD."
+          }
+        },
+        "required": [
+          "type",
           "cost"
         ]
       },
